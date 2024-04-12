@@ -1,0 +1,146 @@
+diff --git a/builtins/events/onFileSystemChange/filesystem_unix.go b/builtins/events/onFileSystemChange/filesystem_unix.go
+index 8c53939c..bf72cde5 100644
+--- a/builtins/events/onFileSystemChange/filesystem_unix.go
++++ b/builtins/events/onFileSystemChange/filesystem_unix.go
+@@ -1,5 +1,6 @@
+-//go:build !windows && !plan9 && !js
++//go:build !windows && !plan9 && !js || zos
+ // +build !windows,!plan9,!js
++// +build zos
+ 
+ package onfilesystemchange
+ 
+diff --git a/builtins/events/onSignalReceived/interrupts_zos.go b/builtins/events/onSignalReceived/interrupts_zos.go
+new file mode 100644
+index 00000000..3dbdb1ab
+--- /dev/null
++++ b/builtins/events/onSignalReceived/interrupts_zos.go
+@@ -0,0 +1,39 @@
++//go:build zos
++// +build zos
++
++package signaltrap
++
++import "syscall"
++
++var interrupts = map[string]syscall.Signal{
++	"SIGHUP":    syscall.SIGHUP,
++	"SIGINT":    syscall.SIGINT,
++	"SIGQUIT":   syscall.SIGQUIT,
++	"SIGILL":    syscall.SIGILL,
++	"SIGTRAP":   syscall.SIGTRAP,
++	"SIGABRT":   syscall.SIGABRT,
++	"SIGBUS":    syscall.SIGBUS,
++	"SIGFPE":    syscall.SIGFPE,
++	"SIGKILL":   syscall.SIGKILL,
++	"SIGUSR1":   syscall.SIGUSR1,
++	"SIGSEGV":   syscall.SIGSEGV,
++	"SIGUSR2":   syscall.SIGUSR2,
++	"SIGPIPE":   syscall.SIGPIPE,
++	"SIGALRM":   syscall.SIGALRM,
++	// "SIGSTKFLT": syscall.SIGSTKFLT,
++	"SIGCHLD":   syscall.SIGCHLD,
++	"SIGCONT":   syscall.SIGCONT,
++	"SIGSTOP":   syscall.SIGSTOP,
++	"SIGTSTP":   syscall.SIGTSTP,
++	"SIGTTIN":   syscall.SIGTTIN,
++	"SIGTTOU":   syscall.SIGTTOU,
++	"SIGURG":    syscall.SIGURG,
++	"SIGXCPU":   syscall.SIGXCPU,
++	"SIGXFSZ":   syscall.SIGXFSZ,
++	"SIGVTALRM": syscall.SIGVTALRM,
++	"SIGPROF":   syscall.SIGPROF,
++	"SIGWINCH":  syscall.SIGWINCH,
++	"SIGIO":     syscall.SIGIO,
++	// "SIGPWR":    syscall.SIGPWR,
++	"SIGSYS":    syscall.SIGSYS,
++}
+diff --git a/builtins/optional/select/lib_c.go b/builtins/optional/select/lib_c.go
+index e9ee9426..ee863a0f 100644
+--- a/builtins/optional/select/lib_c.go
++++ b/builtins/optional/select/lib_c.go
+@@ -1,8 +1,9 @@
+-//go:build !no_cgo && !linux && !(windows && amd64) && !darwin
++//go:build !no_cgo && !linux && !(windows && amd64) && !darwin && zos
+ // +build !no_cgo
+ // +build !linux
+ // +build !windows !amd64
+ // +build !darwin
++// +build zos
+ 
+ /*
+ 	This file uses the C SQLite3 library. To compile it you will need gcc
+diff --git a/go.mod b/go.mod
+index 7b0ea2b0..8057c742 100644
+--- a/go.mod
++++ b/go.mod
+@@ -17,7 +17,6 @@ require (
+ 	github.com/phayes/permbits v0.0.0-20190612203442-39d7c581d2ee
+ 	golang.org/x/sys v0.8.0
+ 	gopkg.in/yaml.v3 v3.0.1
+-	modernc.org/sqlite v1.25.0
+ )
+ 
+ require (
+@@ -34,12 +33,4 @@ require (
+ 	golang.org/x/mod v0.8.0 // indirect
+ 	golang.org/x/tools v0.6.0 // indirect
+ 	lukechampine.com/uint128 v1.2.0 // indirect
+-	modernc.org/cc/v3 v3.40.0 // indirect
+-	modernc.org/ccgo/v3 v3.16.13 // indirect
+-	modernc.org/libc v1.24.1 // indirect
+-	modernc.org/mathutil v1.5.0 // indirect
+-	modernc.org/memory v1.6.0 // indirect
+-	modernc.org/opt v0.1.3 // indirect
+-	modernc.org/strutil v1.1.3 // indirect
+-	modernc.org/token v1.0.1 // indirect
+ )
+diff --git a/utils/cache/cachedb/lib_c.go b/utils/cache/cachedb/lib_c.go
+index 805fcb8f..8f1b12ef 100644
+--- a/utils/cache/cachedb/lib_c.go
++++ b/utils/cache/cachedb/lib_c.go
+@@ -1,8 +1,9 @@
+-//go:build !no_cgo && !linux && !(windows && amd64) && !darwin
++//go:build !no_cgo && !linux && !(windows && amd64) && !darwin && zos
+ // +build !no_cgo
+ // +build !linux
+ // +build !windows !amd64
+ // +build !darwin
++// +build zos
+ 
+ /*
+ 	This file uses the C SQLite3 library. To compile it you will need gcc
+diff --git a/utils/readline/raw_unix.go b/utils/readline/raw_unix.go
+index 5723f4e3..3b50e34a 100644
+--- a/utils/readline/raw_unix.go
++++ b/utils/readline/raw_unix.go
+@@ -2,8 +2,8 @@
+ // Use of this source code is governed by a BSD-style
+ // license that can be found in the LICENSE file.
+ 
+-//go:build darwin || dragonfly || freebsd || (linux && !appengine) || netbsd || openbsd
+-// +build darwin dragonfly freebsd linux,!appengine netbsd openbsd
++//go:build darwin || dragonfly || freebsd || (linux && !appengine) || netbsd || openbsd || zos
++// +build darwin dragonfly freebsd linux,!appengine netbsd openbsd zos
+ 
+ package readline
+ 
+diff --git a/utils/readline/raw_zos.go b/utils/readline/raw_zos.go
+new file mode 100644
+index 00000000..0ea25d05
+--- /dev/null
++++ b/utils/readline/raw_zos.go
+@@ -0,0 +1,13 @@
++// Copyright 2013 The Go Authors. All rights reserved.
++// Use of this source code is governed by a BSD-style
++// license that can be found in the LICENSE file.
++
++//go:build zos
++// +build zos 
++
++package readline
++
++import "golang.org/x/sys/unix"
++
++const ioctlReadTermios = unix.TCGETS
++const ioctlWriteTermios = unix.TCSETS

@@ -1,0 +1,90 @@
+# Update bump details accordingly. Use bump check to confirm.
+# bump: murex-version /MUREX_VERSION="(.*)"/ https://github.com/lmorg/murex.git|semver:*
+MUREX_VERSION="6.0.1000" # Specify a stable release
+
+export ZOPEN_STABLE_TAG="v${MUREX_VERSION}"
+export ZOPEN_STABLE_URL="https://github.com/lmorg/murex.git"
+export ZOPEN_STABLE_DEPS="comp_go git wharf"
+export ZOPEN_BUILD_LINE="STABLE"
+export ZOPEN_CATEGORIES="development"
+export ZOPEN_NAME="murex"
+
+export ZOPEN_COMP=GO
+export ZOPEN_CONFIGURE="zopen_config"
+export ZOPEN_CONFIGURE_MINIMAL=1
+export ZOPEN_MAKE="skip"
+export ZOPEN_INSTALL="zopen_install"
+export ZOPEN_CHECK="skip"
+export ZOPEN_CLEAN="zopen_clean"
+
+zopen_init()
+{
+  export CGO_ENABLED=1
+  export GOTMPDIR=$PWD/go-tmpdir
+  mkdir -p $PWD/go-tmpdir
+  export PATH=$PATH:$GOROOT/go-build-zos/bin
+  export GOBIN=$ZOPEN_INSTALL_DIR/bin
+  mkdir -p $ZOPEN_INSTALL_DIR/bin
+  mkdir -p $ZOPEN_INSTALL_DIR/lib
+  # unset CC CXX
+}
+
+zopen_config()
+{
+  cd .. && echo ""
+  git clone https://github.com/mattn/go-sqlite3.git
+  echo "Checkin out go-sqlite3"
+  cd go-sqlite3
+  go-clang -shared -fvisibility=default -o sqlite3-binding.so sqlite3-binding.c  
+  chtag -tc1047 sqlite3-binding.x
+  mv ./sqlite3-binding.c ./sqlite3-binding.c.ignore
+
+  mv ./sqlite3-binding.so $ZOPEN_INSTALL_DIR/lib/sqlite3-binding.so
+  git apply ../patches/sqlite3_go_patch
+
+  cd .. && echo ""
+  git clone https://github.com/fsnotify/fsnotify.git
+  echo "Checkin out fsnotify"
+  cd fsnotify
+  git apply ../patches/fsnotify_patch
+
+  cd .. && echo ""
+  git clone https://github.com/fsnotify/fsnotify.git
+  echo "Checkin out fsnotify"
+  cd fsnotify
+  git apply ../patches/fsnotify_patch
+
+  cd ../ && echo ""
+  go work init ./fsnotfiy ./go-sqlite3 ./murex
+  wharf ./murex/...
+}
+
+zopen_install()
+{
+  cd murex
+  echo "here-at-instal $PWD"
+  go install
+}
+
+zopen_clean()
+{
+  rm -rf ../.wharf_cache ../go.work* ../wharf_port ../murex ../go-sqlite3 ../fsnotify
+}
+
+zopen_check_results()
+{
+  dir="$1"
+  pfx="$2"
+  chk="$1/$2_check.log"
+
+  # Echo the following information to gauge build health
+  echo "actualFailures:0"
+  echo "totalTests:1"
+  echo "expectedFailures:0"
+  echo "expectedTotalTests:1"
+}
+
+zopen_get_version()
+{
+  echo "$MUREX_VERSION"
+}
