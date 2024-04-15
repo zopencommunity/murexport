@@ -36,8 +36,29 @@ zopen_config()
   git clone https://github.com/mattn/go-sqlite3.git
   echo "Checking out go-sqlite3"
   cd go-sqlite3
-  go-clang -shared -fvisibility=default -o sqlite3-binding.so sqlite3-binding.c  
-  ls | grep sqlite3-binding
+  clang -shared -fvisibility=default -o sqlite3-binding.so sqlite3-binding.c \
+    -DPATH_MAX=1023 \
+    -D_AE_BIMODAL=1 \
+    -D_ALL_SOURCE \
+    -U_ENHANCED_ASCII_EXT \
+    -D_ENHANCED_ASCII_EXT=0xFFFFFFFF \
+    -D_Export=extern \
+    -D_LARGE_TIME_API \
+    -D_OPEN_MSGQ_EXT \
+    -D_OPEN_SYS_FILE_EXT=1 \
+    -D_OPEN_SYS_SOCK_IPV6 \
+    -D_UNIX03_SOURCE \
+    -D_UNIX03_THREADS \
+    -D_UNIX03_WITHDRAWN \
+    -D_XOPEN_SOURCE=600 \
+    -D_XOPEN_SOURCE_EXTENDED \
+    -D_XPLATFORM_SOURCE=1 \
+    -D__static_assert=static_assert \
+    -D_POSIX_C_SOURCE=200112L \
+    -fasm \
+    -fzos-le-char-mode=ascii \
+    -isystem/usr/include \
+    -m64
   chtag -tc1047 sqlite3-binding.x
   mv ./sqlite3-binding.c ./sqlite3-binding.c.ignore
   mv sqlite3-binding.so $ZOPEN_INSTALL_DIR/lib/sqlite3-binding.so
@@ -61,7 +82,7 @@ zopen_config()
 zopen_install()
 {
   cd murex
-  echo "here-at-instal $PWD"
+  echo "here-at-install $PWD"
   go install
 }
 
