@@ -4,7 +4,7 @@ MUREX_VERSION="6.0.1000" # Specify a stable release
 
 export ZOPEN_STABLE_TAG="v${MUREX_VERSION}"
 export ZOPEN_STABLE_URL="https://github.com/lmorg/murex.git"
-export ZOPEN_STABLE_DEPS="comp_go git wharf"
+export ZOPEN_STABLE_DEPS="comp_clang comp_go git wharf"
 export ZOPEN_BUILD_LINE="STABLE"
 export ZOPEN_CATEGORIES="development"
 export ZOPEN_NAME="murex"
@@ -19,6 +19,7 @@ export ZOPEN_CLEAN="zopen_clean"
 
 zopen_init()
 {
+  echo "Here at zopen_init"
   export CGO_ENABLED=1
   export GOTMPDIR=$PWD/go-tmpdir
   mkdir -p $PWD/go-tmpdir
@@ -33,29 +34,27 @@ zopen_config()
 {
   cd .. && echo ""
   git clone https://github.com/mattn/go-sqlite3.git
-  echo "Checkin out go-sqlite3"
+  echo "Checking out go-sqlite3"
   cd go-sqlite3
   go-clang -shared -fvisibility=default -o sqlite3-binding.so sqlite3-binding.c  
+  ls | grep sqlite3-binding
   chtag -tc1047 sqlite3-binding.x
   mv ./sqlite3-binding.c ./sqlite3-binding.c.ignore
-
-  mv ./sqlite3-binding.so $ZOPEN_INSTALL_DIR/lib/sqlite3-binding.so
+  mv sqlite3-binding.so $ZOPEN_INSTALL_DIR/lib/sqlite3-binding.so
   git apply ../patches/sqlite3_go_patch
 
   cd .. && echo ""
   git clone https://github.com/fsnotify/fsnotify.git
-  echo "Checkin out fsnotify"
+  echo "Checking out fsnotify"
   cd fsnotify
   git apply ../patches/fsnotify_patch
 
   cd .. && echo ""
-  git clone https://github.com/fsnotify/fsnotify.git
-  echo "Checkin out fsnotify"
-  cd fsnotify
-  git apply ../patches/fsnotify_patch
+  cd murex
+  git apply ../patches/murex_patch
 
   cd ../ && echo ""
-  go work init ./fsnotfiy ./go-sqlite3 ./murex
+  go work init ./fsnotify ./go-sqlite3 ./murex
   wharf ./murex/...
 }
 
