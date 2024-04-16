@@ -19,7 +19,6 @@ export ZOPEN_CLEAN="zopen_clean"
 
 zopen_init()
 {
-  echo "Here at zopen_init"
   export CGO_ENABLED=1
   export GOTMPDIR=$PWD/go-tmpdir
   mkdir -p $PWD/go-tmpdir
@@ -35,6 +34,8 @@ zopen_config()
   cd .. && echo ""
   git clone https://github.com/mattn/go-sqlite3.git
   echo "Checking out go-sqlite3"
+
+  # Building the DLL for go-sqlite3
   cd go-sqlite3
   clang -shared -fvisibility=default -o sqlite3-binding.so sqlite3-binding.c \
     -DPATH_MAX=1023 \
@@ -62,7 +63,11 @@ zopen_config()
   chtag -tc1047 sqlite3-binding.x
   mv ./sqlite3-binding.c ./sqlite3-binding.c.ignore
   mv sqlite3-binding.so $ZOPEN_INSTALL_DIR/lib/sqlite3-binding.so
+
+  # This is to point to where the go-sqlite3 side deck is
   git apply ../patches/sqlite3_go_patch
+  GO_SQLITE3_DIR=$(pwd)
+  sed -i "s#ZOPEN-REPLACE-DIR#${GO_SQLITE3_DIR}#g" sqlite3.go
 
   cd .. && echo ""
   git clone https://github.com/fsnotify/fsnotify.git
