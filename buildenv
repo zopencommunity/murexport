@@ -54,7 +54,7 @@ zopen_config()
     -D_XOPEN_SOURCE_EXTENDED \
     -D_XPLATFORM_SOURCE=1 \
     -D__static_assert=static_assert \
-    -D_POSIX_C_SOURCE=200112L \
+    -D_POSIX_C_SOURCE=200809L \
     -fasm \
     -fzos-le-char-mode=ascii \
     -isystem/usr/include \
