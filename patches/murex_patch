@@ -136,7 +136,7 @@ index 00000000..0ea25d05
 +// license that can be found in the LICENSE file.
 +
 +//go:build zos
-+// +build zos 
++// +build zos
 +
 +package readline
 +
