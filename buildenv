@@ -26,6 +26,7 @@ zopen_init()
   export GOBIN=$ZOPEN_INSTALL_DIR/bin
   mkdir -p $ZOPEN_INSTALL_DIR/bin
   # unset CC CXX
+  export __GOZ_EXTRA_ARGS=-lcurl,-lncurses,-lzoslib,/data/zopen-jenkins/usr/local/zopen/zoslib/zoslib-main.20240311_105945.zos/lib/celquopt.s.o,-lzoslib-supp,/data/workspace/Port-Build-Murex/murex/murex/.zoslib_hooks/zoslib_env_hook.c.o
 }
 
 zopen_config()
