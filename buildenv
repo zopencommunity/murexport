@@ -85,14 +85,12 @@ zopen_config()
 
 zopen_install()
 {
-  pwd
-  echo $TMPDIR
-  env
   mkdir -p $ZOPEN_INSTALL_DIR/lib
   mv ./go-sqlite3/sqlite3-binding.so $ZOPEN_INSTALL_DIR/lib/sqlite3-binding.so
   cd murex
   echo "here-at-install $PWD"
-  CGO_LDFLAGS_ALLOW='^((?:[^/]*/)*)(.*)\.x$' go build -o $GOBIN/murex
+  eval $(/data/go/etc/goz-env)
+  _BPX_SHAREAS=off CGO_LDFLAGS_ALLOW='^((?:[^/]*/)*)(.*)\.x$' go build -o $GOBIN/murex
 }
 
 zopen_clean()
