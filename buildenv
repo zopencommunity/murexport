@@ -1,6 +1,6 @@
 # Update bump details accordingly. Use bump check to confirm.
 # bump: murex-version /MUREX_VERSION="(.*)"/ https://github.com/lmorg/murex.git|semver:*
-MUREX_VERSION="6.0.1000" # Specify a stable release
+MUREX_VERSION="6.1.8300" # Specify a stable release
 
 export ZOPEN_STABLE_TAG="v${MUREX_VERSION}"
 export ZOPEN_STABLE_URL="https://github.com/lmorg/murex.git"
