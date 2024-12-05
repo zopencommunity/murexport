@@ -4,7 +4,7 @@ MUREX_VERSION="6.0.1000" # Specify a stable release
 
 export ZOPEN_STABLE_TAG="v${MUREX_VERSION}"
 export ZOPEN_STABLE_URL="https://github.com/lmorg/murex.git"
-export ZOPEN_STABLE_DEPS="comp_clang comp_go git wharf"
+export ZOPEN_STABLE_DEPS="check_clang check_go git wharf"
 export ZOPEN_BUILD_LINE="STABLE"
 export ZOPEN_CATEGORIES="development"
 export ZOPEN_NAME="murex"
